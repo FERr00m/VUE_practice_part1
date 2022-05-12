@@ -1,54 +1,71 @@
 <template>
-  <the-navbar :visible="isAuth"></the-navbar>
-  <div class="container with-nav">
-    <router-view></router-view>
+  <div className="container">
+    <div className="card">
+      <h1>Vue Composition Api</h1>
+      <small>data, methods, computed, watch</small>
+      <hr>
+      <app-framework-info
+        :name="name"
+        :version="version"
+        @changeBack="change"
+      ></app-framework-info>
+
+      <div class="form-control">
+<!--        <input type="text" ref="textInput">-->
+        <input type="text" v-model="firstName">
+      </div>
+
+      <button className="btn" @click="changeInfo">Изменить</button>
+    </div>
   </div>
 </template>
 
 <script>
-import TheNavbar from '@/components/TheNavbar'
+import { ref, watch } from 'vue'
+import AppFrameworkInfo from '@/components/AppFrameworkInfo'
 
 export default {
-  components: { TheNavbar },
-  data () {
-    return {
-      isAuth: true
+  components: { AppFrameworkInfo },
+  setup () {
+    const name = ref('VueJS')
+    const version = ref(3)
+    // const textInput = ref(null)
+    const firstName = ref('')
+
+    function changeInfo () {
+      name.value = 'Vue JS!'
+      version.value = 42
+      // console.log(textInput.value.value)
     }
-  },
-  methods: {
-    login () {
-      this.isAuth = true
-      if (this.$route.query.page) {
-        this.$router.push(this.$route.query.page)
-      } else {
-        this.$router.push('/dashboard')
-      }
-    },
-    logout () {
-      this.isAuth = false
-      this.$router.push({
-        path: '/login',
-        query: {
-          page: this.$route.path
-        }
-      })
+
+    function change (num) {
+      version.value = num
     }
-  },
-  provide () {
+    // const dblVersion = computed(() => version.value * 2)
+
+    watch(firstName, (newValue, oldValue) => {
+      console.log(newValue)
+    })
+
     return {
-      emails: [
-        { id: 1, theme: 'Купил себе PlayStation 5' },
-        { id: 2, theme: 'Выучил Vue Router' },
-        { id: 3, theme: 'Хочу изучить весь Vue' },
-        { id: 4, theme: 'А следующий блок про Vuex!' },
-        { id: 5, theme: 'А что там на счет Vue Hooks?' }
-      ],
-      login: this.login,
-      logout: this.logout
+      name,
+      version,
+      firstName,
+      change,
+      changeInfo
     }
   }
+  // data () {
+  //   return {
+  //     name: 'VueJS',
+  //     version: 3
+  //   }
+  // },
+  // methods: {
+  //   changeInfo () {
+  //     this.name = 'Vue JS!'
+  //     this.version = 4
+  //   }
+  // }
 }
 </script>
-
-<style>
-</style>
